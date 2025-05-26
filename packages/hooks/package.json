@@ -1,0 +1,32 @@
+{
+  "name": "@mini-wallet/hooks",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "license": "MIT",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --dts",
+    "lint": "eslint \"src/**/*.ts*\"",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+  },
+  "dependencies": {
+    "@mini-wallet/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/react": "^19.0.0",
+    "eslint": "^8.54.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.2"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  }
+}

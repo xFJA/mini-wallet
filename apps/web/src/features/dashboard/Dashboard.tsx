@@ -1,4 +1,4 @@
-import useAccountData from '@/hooks/useAccountData';
+import { useAccountData } from '@mini-wallet/hooks';
 import AccountBalance from '../../components/AccountBalance';
 import TransactionList from '../../components/TransactionList';
 import WithdrawSection from '../../components/WithdrawSection';

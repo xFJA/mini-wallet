@@ -44,6 +44,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@mini-wallet/hooks':
+        specifier: workspace:*
+        version: link:../../packages/hooks
       '@mini-wallet/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -111,6 +114,31 @@ importers:
       vite:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@20.11.0)
+
+  packages/hooks:
+    dependencies:
+      '@mini-wallet/types':
+        specifier: workspace:*
+        version: link:../types
+      react:
+        specifier: ^19.0.0
+        version: 19.1.0
+    devDependencies:
+      '@types/node':
+        specifier: ^20.10.0
+        version: 20.11.0
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.1.5
+      eslint:
+        specifier: ^8.54.0
+        version: 8.57.1
+      tsup:
+        specifier: ^8.0.1
+        version: 8.5.0(typescript@5.8.3)
+      typescript:
+        specifier: ^5.3.2
+        version: 5.8.3
 
   packages/types:
     dependencies:
