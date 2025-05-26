@@ -1,3 +1,6 @@
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+
 interface AccountBalanceProps {
   balance: number;
   currency?: string;
@@ -20,7 +23,7 @@ export const AccountBalance: React.FC<AccountBalanceProps> = ({
     return (
       <div className="bg-white rounded-lg shadow p-6 h-full">
         <h2 className="text-lg font-medium text-gray-500 mb-1">Current Balance</h2>
-        <div className="animate-pulse h-8 w-32 bg-gray-200 rounded"></div>
+        <Skeleton height={32} width={120} borderRadius={4} />
       </div>
     );
   }
