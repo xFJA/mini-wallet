@@ -1,7 +1,13 @@
+import { AccountData } from '@mini-wallet/types';
 import { useEffect, useState } from 'react';
-import { AccountData } from '../types';
 
-export function useAccountData() {
+interface UseAccountDataResult {
+  accountData: AccountData;
+  isLoading: boolean;
+  error: Error | null;
+}
+
+export function useAccountData(): UseAccountDataResult {
   const [accountData, setAccountData] = useState<AccountData>({
     balance: 1250.75,
     currency: 'USD',

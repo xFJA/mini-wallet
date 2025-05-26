@@ -12,6 +12,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,css,md,json}\""
   },
   "dependencies": {
+    "@mini-wallet/types": "workspace:*",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-loading-skeleton": "3.5.0"

@@ -1,7 +1,7 @@
+import useAccountData from '@/hooks/useAccountData';
 import AccountBalance from '../../components/AccountBalance';
 import TransactionList from '../../components/TransactionList';
 import WithdrawSection from '../../components/WithdrawSection';
-import useAccountData from '../../hooks/useAccountData';
 
 export const Dashboard: React.FC = () => {
   const { accountData, isLoading, error } = useAccountData();
