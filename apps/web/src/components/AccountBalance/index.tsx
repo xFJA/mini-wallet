@@ -7,6 +7,13 @@ interface AccountBalanceProps {
   isLoading?: boolean;
 }
 
+const BalanceCard: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div className="bg-white rounded-lg shadow p-6 h-full">
+    <h2 className="text-lg font-medium text-gray-500 mb-1">Current Balance</h2>
+    {children}
+  </div>
+);
+
 export const AccountBalance: React.FC<AccountBalanceProps> = ({
   balance,
   currency = 'USD',
@@ -21,18 +28,16 @@ export const AccountBalance: React.FC<AccountBalanceProps> = ({
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow p-6 h-full">
-        <h2 className="text-lg font-medium text-gray-500 mb-1">Current Balance</h2>
+      <BalanceCard>
         <Skeleton height={32} width={120} borderRadius={4} />
-      </div>
+      </BalanceCard>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 h-full">
-      <h2 className="text-lg font-medium text-gray-500 mb-1">Current Balance</h2>
+    <BalanceCard>
       <div className="text-3xl font-bold text-gray-900">{formattedBalance}</div>
-    </div>
+    </BalanceCard>
   );
 };
 
