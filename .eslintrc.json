@@ -31,7 +31,8 @@
     "no-console": "warn",
     "no-unused-vars": "warn",
     "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }],
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off"
   },
   "ignorePatterns": ["node_modules", "dist", "build", ".turbo"]
 }
