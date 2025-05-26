@@ -11,9 +11,9 @@ This monorepo uses [Turborepo](https://turbo.build/repo) with [pnpm](https://pnp
 ```
 .
 ├── apps/
-│   └── (your apps will go here)
+│   └── web
 ├── packages/
-│   └── (your shared packages will go here)
+│   └── TBD
 ├── turbo.json
 ├── package.json
 └── pnpm-workspace.yaml
