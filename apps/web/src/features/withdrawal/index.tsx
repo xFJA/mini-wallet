@@ -95,7 +95,13 @@ export const Withdrawal: React.FC<WithdrawalFormProps> = ({ onSuccess }) => {
           </div>
         )}
 
-        <Button type="submit" loading={isLoading} disabled={isLoading || !amount}>
+        <Button
+          type="submit"
+          variant="primary"
+          size="md"
+          loading={isLoading}
+          disabled={isLoading || !amount}
+        >
           Withdraw
         </Button>
       </form>
