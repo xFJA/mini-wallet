@@ -9,6 +9,14 @@ export const transactionSchema = z.object({
 
 export type Transaction = z.infer<typeof transactionSchema>;
 
+import { paginationSchema } from './common';
+
+export const paginatedTransactionsSchema = paginationSchema.extend({
+  transactions: z.array(transactionSchema),
+});
+
+export type PaginatedTransactions = z.infer<typeof paginatedTransactionsSchema>;
+
 export const withdrawalRequestSchema = z.object({
   amount: z.number().positive(),
 });

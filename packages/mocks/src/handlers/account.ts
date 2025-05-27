@@ -6,22 +6,22 @@ import {
 } from '@mini-wallet/types';
 import { delay, http, HttpResponse } from 'msw';
 
+const generateMockTransactions = (count: number): Transaction[] => {
+  const transactions: Transaction[] = [];
+  for (let i = 1; i <= count; i++) {
+    transactions.push({
+      id: i.toString(),
+      amount: Math.round(Math.random() * 10000) / 100,
+      date: new Date(Date.now() - i * 3600000).toISOString(), // Each transaction 1 hour apart
+      status: Math.random() > 0.8 ? (Math.random() > 0.5 ? 'pending' : 'failed') : 'completed',
+    });
+  }
+  return transactions;
+};
+
 let mockAccountData: DashboardData = {
   balance: 12250.75,
-  transactions: [
-    {
-      id: '1',
-      amount: 1000,
-      date: new Date(Date.now() - 86400000).toISOString(),
-      status: 'completed',
-    },
-    {
-      id: '2',
-      amount: 250.25,
-      date: new Date().toISOString(),
-      status: 'completed',
-    },
-  ],
+  transactions: generateMockTransactions(25), // Generate 25 mock transactions
 };
 
 export const accountHandlers = [
@@ -31,9 +31,11 @@ export const accountHandlers = [
 
     await delay(800);
 
-    // Get sort direction from query param (?sort=asc|desc)
+    // Get query parameters
     const url = new URL(request.url);
     const sort = url.searchParams.get('sort') || 'desc';
+    const page = parseInt(url.searchParams.get('page') || '1', 10);
+    const pageSize = parseInt(url.searchParams.get('pageSize') || '10', 10);
 
     // Sort transactions by date
     const sortedTransactions = [...(mockAccountData.transactions || [])].sort((a, b) => {
@@ -41,9 +43,21 @@ export const accountHandlers = [
       const dateB = new Date(b.date).getTime();
       return sort === 'asc' ? dateA - dateB : dateB - dateA;
     });
+
+    // Calculate pagination
+    const totalItems = sortedTransactions.length;
+    const totalPages = Math.ceil(totalItems / pageSize);
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedTransactions = sortedTransactions.slice(startIndex, endIndex);
+
     return new HttpResponse(
       JSON.stringify({
-        transactions: sortedTransactions,
+        transactions: paginatedTransactions,
+        page,
+        pageSize,
+        totalPages,
+        totalItems,
       }),
       {
         status: 200,

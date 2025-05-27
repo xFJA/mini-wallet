@@ -16,6 +16,10 @@ export interface TransactionState {
   transactions: Transaction[];
   transactionsLoading: boolean;
   transactionsError: Error | null;
+  currentPage: number;
+  totalPages: number;
+  pageSize: number;
+  totalItems: number;
 }
 
 export type AuthState = {
@@ -44,7 +48,11 @@ export type WithdrawalActions = {
 };
 
 export type TransactionActions = {
-  fetchTransactions(sortDirection?: SortDirection): Promise<void>;
+  fetchTransactions(options?: {
+    sortDirection?: SortDirection;
+    page?: number;
+    pageSize?: number;
+  }): Promise<void>;
   addTransaction(transaction: Transaction): void;
   resetTransactionsError(): void;
 };

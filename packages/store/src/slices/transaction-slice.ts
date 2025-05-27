@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import type { SortDirection, Transaction } from '@mini-wallet/types';
+import type { PaginatedTransactions, SortDirection, Transaction } from '@mini-wallet/types';
 import type { StateCreator } from 'zustand';
 import type { TransactionState, WalletStore } from '../types';
 
@@ -8,7 +8,11 @@ export const createTransactionSlice: StateCreator<
   [],
   [],
   TransactionState & {
-    fetchTransactions: (sortDirection?: SortDirection) => Promise<void>;
+    fetchTransactions: (options?: {
+      sortDirection?: SortDirection;
+      page?: number;
+      pageSize?: number;
+    }) => Promise<void>;
     addTransaction: (newTransaction: Transaction) => void;
     resetTransactionsError: () => void;
   }
@@ -16,29 +20,37 @@ export const createTransactionSlice: StateCreator<
   transactions: [],
   transactionsLoading: false,
   transactionsError: null,
+  currentPage: 1,
+  totalPages: 1,
+  pageSize: 5,
+  totalItems: 0,
 
-  fetchTransactions: async (sortDirection = 'desc') => {
+  fetchTransactions: async (options = {}) => {
+    const { sortDirection = 'desc', page = 1, pageSize = 5 } = options;
     set({
       transactionsLoading: true,
       transactionsError: null,
     });
 
     try {
-      const response = await fetch(`/api/transactions?sort=${sortDirection}`);
+      const queryParams = new URLSearchParams();
+      queryParams.set('sort', sortDirection);
+      queryParams.set('page', page.toString());
+      queryParams.set('pageSize', pageSize.toString());
+      const response = await fetch(`/api/transactions?${queryParams.toString()}`);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch transactions: ${response.status}`);
       }
 
-      const data = (await response.json()) as { transactions: Transaction[] };
+      const data = (await response.json()) as PaginatedTransactions;
+      const { transactions: fetchedTransactions, totalPages, totalItems } = data;
 
       // Merge existing pending transactions with fetched transactions
       set((state) => {
-        const fetchedTransactions = data.transactions || [];
-
         // Create a map of fetched transactions by amount for matching
         const fetchedByAmount = new Map<number, Transaction>();
-        fetchedTransactions.forEach((t) => {
+        fetchedTransactions.forEach((t: Transaction) => {
           // Only consider recent transactions (last 30 seconds) for matching
           const transactionTime = new Date(t.date).getTime();
           const thirtySecondsAgo = Date.now() - 30000;
@@ -50,11 +62,11 @@ export const createTransactionSlice: StateCreator<
 
         // Filter out pending transactions that have matching completed ones
         const pendingTransactions = state.transactions.filter((t) => {
-          if (t.status !== 'pending') return true;
+          if (t.status !== 'pending') return false; // Only keep pending transactions
 
           // Check if this pending transaction has a matching completed one
           const matchingCompleted = fetchedByAmount.get(t.amount);
-          if (matchingCompleted && t.status === 'pending') {
+          if (matchingCompleted && matchingCompleted.status === 'completed') {
             // Found a match, don't keep this pending transaction
             return false;
           }
@@ -67,7 +79,7 @@ export const createTransactionSlice: StateCreator<
         const pendingIds = new Set(pendingTransactions.map((t) => t.id));
 
         // Only add fetched transactions that aren't already in pending list
-        const uniqueFetched = fetchedTransactions.filter((t) => !pendingIds.has(t.id));
+        const uniqueFetched = fetchedTransactions.filter((t: Transaction) => !pendingIds.has(t.id));
 
         // Always sort all transactions (including pending) by date
         const allTransactions = [...uniqueFetched, ...pendingTransactions];
@@ -79,6 +91,10 @@ export const createTransactionSlice: StateCreator<
         return {
           transactions: allTransactions,
           transactionsLoading: false,
+          currentPage: page,
+          totalPages,
+          pageSize,
+          totalItems,
         };
       });
     } catch (error) {

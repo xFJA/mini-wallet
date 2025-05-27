@@ -41,6 +41,10 @@ export const useTransactions = () => {
     isLoading: state.transactionsLoading,
     error: state.transactionsError,
     fetchTransactions: state.fetchTransactions,
+    currentPage: state.currentPage,
+    totalPages: state.totalPages,
+    pageSize: state.pageSize,
+    totalItems: state.totalItems,
   }));
 };
 
