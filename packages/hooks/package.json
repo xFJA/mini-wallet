@@ -1,0 +1,33 @@
+{
+  "name": "@mini-wallet/hooks",
+  "version": "0.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "license": "MIT",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsc && tsup src/index.ts --format esm,cjs",
+    "lint": "eslint src/",
+    "clean": "rm -rf .turbo && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "eslint": "^8.47.0",
+    "react": "^19.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.1.6"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.3.0",
+    "@mini-wallet/store": "workspace:*",
+    "@mini-wallet/types": "workspace:*",
+    "react-hook-form": "^7.45.4",
+    "zod": "^3.22.0"
+  }
+}

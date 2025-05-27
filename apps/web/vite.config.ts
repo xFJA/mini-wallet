@@ -9,6 +9,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
+      // TODO: Remove this as it should work like other packages
+      '@mini-wallet/hooks': resolve(__dirname, '../../packages/hooks/src/index.ts'),
+      '@mini-wallet/hooks/*': resolve(__dirname, '../../packages/hooks/src/*'),
     },
   },
 });

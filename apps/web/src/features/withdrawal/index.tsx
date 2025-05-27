@@ -1,68 +1,20 @@
 import Button from '@/components/Button';
 import TextField from '@/components/TextField';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useAccountData, useTransactions, useWithdrawal } from '@mini-wallet/store';
-import { WithdrawalFormValues, withdrawalFormSchema } from '@mini-wallet/types';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useWithdrawalForm } from '@mini-wallet/hooks';
 
-interface WithdrawalFormProps {
+interface WithdrawalProps {
   onSuccess?: () => void;
 }
 
-export const Withdrawal: React.FC<WithdrawalFormProps> = ({ onSuccess }) => {
-  const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
-  const { withdraw, isLoading, error: withdrawalError } = useWithdrawal();
-  const { fetchAccountData } = useAccountData();
-  const { fetchTransactions } = useTransactions();
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<WithdrawalFormValues>({
-    resolver: zodResolver(withdrawalFormSchema),
-    defaultValues: {
-      amount: '',
-    },
-  });
-
-  const onSubmit = async (data: WithdrawalFormValues) => {
-    setError(null);
-    setSuccessMessage(null);
-
-    const numAmount = parseFloat(data.amount);
-
-    try {
-      reset();
-      setSuccessMessage('Processing withdrawal...');
-
-      await withdraw(numAmount);
-
-      setSuccessMessage('Withdrawal successful!');
-
-      setTimeout(async () => {
-        try {
-          await Promise.all([fetchAccountData(), fetchTransactions()]);
-          if (onSuccess) onSuccess();
-        } catch (refreshError) {
-          console.error('Error refreshing data:', refreshError);
-        }
-      }, 500);
-    } catch (err) {
-      setError('An error occurred while processing your withdrawal');
-      console.error('Withdrawal error:', err);
-    }
-  };
+export const Withdrawal: React.FC<WithdrawalProps> = ({ onSuccess }) => {
+  const { register, handleSubmit, errors, isLoading, error, withdrawalError, successMessage } =
+    useWithdrawalForm({ onSuccess });
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold mb-4">Withdraw Funds</h2>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit}>
         <TextField
           id="amount"
           label="Amount (USD)"

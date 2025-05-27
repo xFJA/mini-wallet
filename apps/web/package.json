@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "5.0.1",
+    "@mini-wallet/hooks": "workspace:*",
     "@mini-wallet/mocks": "workspace:*",
     "@mini-wallet/store": "workspace:*",
     "@mini-wallet/types": "workspace:*",
