@@ -1,15 +1,15 @@
-# Mini-Wallet App
+# 💰 Mini-Wallet App
 
-A React-based wallet application that allows users to login, withdraw money, and view past transactions. Built using a modern monorepo architecture with Turborepo and pnpm.
+A modern React-based wallet application that allows users to securely manage their finances. Built with a focus on performance, type safety, and developer experience using a modern monorepo architecture with Turborepo and pnpm. 🚀
 
-## Features
+## ✨ Features
 
 - **Authentication**: Login/logout functionality with JWT token management
 - **Dashboard**: View account balance and recent transactions
 - **Withdrawal**: Withdraw funds with validation and real-time balance updates
 - **Transaction History**: View, sort, and paginate transaction history
 
-## Key Technologies
+## 🛠️ Key Technologies
 
 - [`React 19`](https://react.dev/): Latest React version for UI development
 - [`TypeScript`](https://www.typescriptlang.org/): Type safety across the codebase
@@ -45,7 +45,7 @@ This project uses a monorepo architecture to facilitate code sharing between pla
 
 ```
 
-## Setup and Installation
+## 🚀 Setup and Installation
 
 ### Prerequisites
 
@@ -73,7 +73,7 @@ pnpm test
 pnpm build
 ```
 
-## Design Choices
+## 🎨 Design Choices
 
 ### Architecture
 
@@ -98,7 +98,7 @@ The application is built using a modular, package-based architecture to maximize
 3. **`Zustand`**: Lightweight state management with a simple API that works well across platforms
 4. **`Zod`**: Used for schema validation of API payloads and form data, ensuring that only valid data is processed and reducing runtime errors. `Zod` enables strong validation logic that is type-safe and easy to extend.
 
-## Mobile App Implementation
+## 📱 Mobile App Implementation
 
 1. **Platform-Specific UIs**: Instead of using React Native Web, we've chosen to implement completely separate UIs for web and mobile to maximize platform-specific capabilities and user experience.
 
@@ -117,12 +117,12 @@ The application is built using a modular, package-based architecture to maximize
    - Type definitions
    - Utility functions
 
-## Testing
+## 🧪 Testing
 
 - Example unit tests are provided for key hooks and utilities using `Vitest` and `@testing-library/react`.
 - **Note:** Only representative tests are included. For production readiness, it is recommended to add comprehensive tests covering all components, edge cases, and error states (`apps/web`, `packages/api`, etc.).
 
-## Improvements and Future Work
+## 🚧 Improvements and Future Work
 
 1. **Enhanced UI/UX**:
 
@@ -144,6 +144,6 @@ The application is built using a modular, package-based architecture to maximize
    - Optimize UI for mobile experiences
    - Add platform-specific features (biometric authentication, etc.)
 
-## License
+## 📄 License
 
 MIT
