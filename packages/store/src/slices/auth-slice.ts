@@ -1,17 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import { LoginCredentials, User, validateLoginResponse, validateUser } from '@mini-wallet/types';
 import type { StateCreator } from 'zustand';
 import type { AuthState, WalletStore } from '../types';
-
-// Simplified auth types
-export interface User {
-  id: string;
-  username: string;
-}
-
-export interface LoginCredentials {
-  username: string;
-  password: string;
-}
 
 const safeLocalStorage = {
   getItem: (key: string): string | null => {
@@ -73,27 +63,49 @@ export const createAuthSlice: StateCreator<
     });
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
 
-      // Mock authentication: in a real app, this would be an API call
-      if (credentials.username === 'user' && credentials.password === 'password') {
-        const user: User = {
-          id: '1',
-          username: credentials.username,
-        };
+      if (response.ok) {
+        try {
+          const data = await response.json();
 
-        // Store user in localStorage for persistence
-        safeLocalStorage.setItem('mini-wallet-user', JSON.stringify(user));
+          validateLoginResponse(data);
 
-        set({
-          user,
-          isAuthenticated: true,
-          isLoading: false,
-        });
-        return true;
+          const storedUser = safeLocalStorage.getItem('mini-wallet-user');
+          let user: User;
+
+          if (storedUser) {
+            user = validateUser(JSON.parse(storedUser));
+          } else {
+            user = validateUser({
+              email: credentials.email,
+            });
+          }
+
+          safeLocalStorage.setItem('mini-wallet-user', JSON.stringify(user));
+
+          set({
+            user,
+            isAuthenticated: true,
+            isLoading: false,
+          });
+          return true;
+        } catch (error) {
+          set({
+            error: error instanceof Error ? error : new Error('Invalid response format'),
+            isLoading: false,
+          });
+          return false;
+        }
       } else {
         set({
-          error: new Error('Invalid username or password'),
+          error: new Error('Invalid email or password'),
           isLoading: false,
         });
         return false;

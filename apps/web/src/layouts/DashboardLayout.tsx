@@ -14,7 +14,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Mini Wallet</h1>
-            {user && <p className="text-sm text-gray-600">Welcome, {user.username}</p>}
+            {user && <p className="text-sm text-gray-600">Welcome, {user.email}</p>}
           </div>
           <LogoutButton />
         </div>
