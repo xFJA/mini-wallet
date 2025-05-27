@@ -1,15 +1,16 @@
 import Button from '@/components/Button';
 import TextField from '@/components/TextField';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAccountData, useTransactions, useWithdrawal } from '@mini-wallet/store';
-
+import { WithdrawalFormValues, withdrawalFormSchema } from '@mini-wallet/types';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 interface WithdrawalFormProps {
   onSuccess?: () => void;
 }
 
 export const Withdrawal: React.FC<WithdrawalFormProps> = ({ onSuccess }) => {
-  const [amount, setAmount] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -17,20 +18,26 @@ export const Withdrawal: React.FC<WithdrawalFormProps> = ({ onSuccess }) => {
   const { fetchAccountData } = useAccountData();
   const { fetchTransactions } = useTransactions();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<WithdrawalFormValues>({
+    resolver: zodResolver(withdrawalFormSchema),
+    defaultValues: {
+      amount: '',
+    },
+  });
 
+  const onSubmit = async (data: WithdrawalFormValues) => {
     setError(null);
     setSuccessMessage(null);
 
-    const numAmount = parseFloat(amount);
-    if (isNaN(numAmount) || numAmount <= 0) {
-      setError('Please enter a valid amount greater than 0');
-      return;
-    }
+    const numAmount = parseFloat(data.amount);
 
     try {
-      setAmount('');
+      reset();
       setSuccessMessage('Processing withdrawal...');
 
       await withdraw(numAmount);
@@ -55,18 +62,18 @@ export const Withdrawal: React.FC<WithdrawalFormProps> = ({ onSuccess }) => {
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold mb-4">Withdraw Funds</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
           id="amount"
           label="Amount (USD)"
           type="number"
           step="0.01"
           min="0.01"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          {...register('amount')}
           placeholder="0.00"
           disabled={isLoading}
           startAdornment={'$'}
+          error={errors.amount?.message}
           containerClassName="mb-4"
         />
 
@@ -88,13 +95,7 @@ export const Withdrawal: React.FC<WithdrawalFormProps> = ({ onSuccess }) => {
           </div>
         )}
 
-        <Button
-          type="submit"
-          variant="primary"
-          size="md"
-          loading={isLoading}
-          disabled={isLoading || !amount}
-        >
+        <Button type="submit" variant="primary" size="md" loading={isLoading} disabled={isLoading}>
           Withdraw
         </Button>
       </form>

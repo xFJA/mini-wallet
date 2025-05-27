@@ -1,25 +1,33 @@
 import Button from '@/components/Button';
 import TextField from '@/components/TextField';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '@mini-wallet/store';
-import { useState } from 'react';
+import { LoginCredentials, loginCredentialsSchema } from '@mini-wallet/types';
+import { useForm } from 'react-hook-form';
 
 interface LoginFormProps {
   onSuccess: () => void;
 }
 
+type LoginFormValues = LoginCredentials;
+
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   const { login, isLoading, error } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginCredentialsSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
 
-    if (!email || !password) {
-      return;
-    }
-
-    const success = await login({ email, password });
+  const onSubmit = async (data: LoginFormValues) => {
+    const success = await login(data);
     if (success) {
       onSuccess();
     }
@@ -35,25 +43,23 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
           id="email"
           label="Email"
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          {...register('email')}
           placeholder="Enter your email"
-          required
+          error={errors.email?.message}
         />
 
         <TextField
           id="password"
           label="Password"
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          {...register('password')}
           placeholder="Enter your password"
-          required
+          error={errors.password?.message}
           containerClassName="mb-6"
         />
 
@@ -61,13 +67,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
           Demo credentials: email: user@example.com, password: password
         </p>
 
-        <Button
-          type="submit"
-          variant="primary"
-          size="md"
-          loading={isLoading}
-          disabled={isLoading || !email || !password}
-        >
+        <Button type="submit" variant="primary" size="md" loading={isLoading} disabled={isLoading}>
           {isLoading ? 'Logging in...' : 'Login'}
         </Button>
       </form>

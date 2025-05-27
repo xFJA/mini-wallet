@@ -17,6 +17,20 @@ export const paginatedTransactionsSchema = paginationSchema.extend({
 
 export type PaginatedTransactions = z.infer<typeof paginatedTransactionsSchema>;
 
+export const withdrawalFormSchema = z.object({
+  amount: z
+    .string()
+    .min(1, 'Amount is required')
+    .refine((val) => !isNaN(parseFloat(val)), {
+      message: 'Must be a valid number',
+    })
+    .refine((val) => parseFloat(val) > 0, {
+      message: 'Amount must be greater than 0',
+    }),
+});
+
+export type WithdrawalFormValues = z.infer<typeof withdrawalFormSchema>;
+
 export const withdrawalRequestSchema = z.object({
   amount: z.number().positive(),
 });

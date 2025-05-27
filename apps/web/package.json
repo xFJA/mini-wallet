@@ -16,11 +16,13 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@hookform/resolvers": "5.0.1",
     "@mini-wallet/mocks": "workspace:*",
     "@mini-wallet/store": "workspace:*",
     "@mini-wallet/types": "workspace:*",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hook-form": "7.56.4",
     "react-loading-skeleton": "3.5.0",
     "react-router-dom": "7.6.1"
   },

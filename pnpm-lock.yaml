@@ -44,6 +44,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@hookform/resolvers':
+        specifier: 5.0.1
+        version: 5.0.1(react-hook-form@7.56.4)
       '@mini-wallet/mocks':
         specifier: workspace:*
         version: link:../../packages/mocks
@@ -59,12 +62,18 @@ importers:
       react-dom:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
+      react-hook-form:
+        specifier: 7.56.4
+        version: 7.56.4(react@19.1.0)
       react-loading-skeleton:
         specifier: 3.5.0
         version: 3.5.0(react@19.1.0)
       react-router-dom:
         specifier: 7.6.1
         version: 7.6.1(react-dom@19.1.0)(react@19.1.0)
+      zod:
+        specifier: ^3.22.4
+        version: 3.25.28
     devDependencies:
       '@eslint/js':
         specifier: ^9.25.0
@@ -827,6 +836,15 @@ packages:
       levn: 0.4.1
     dev: true
 
+  /@hookform/resolvers@5.0.1(react-hook-form@7.56.4):
+    resolution: {integrity: sha512-u/+Jp83luQNx9AdyW2fIPGY6Y7NG68eN2ZW8FOJYL+M0i4s49+refdJdOp/A9n9HFQtQs3HIDHQvX3ZET2o7YA==}
+    peerDependencies:
+      react-hook-form: ^7.55.0
+    dependencies:
+      '@standard-schema/utils': 0.3.0
+      react-hook-form: 7.56.4(react@19.1.0)
+    dev: false
+
   /@humanfs/core@0.19.1:
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
     engines: {node: '>=18.18.0'}
@@ -1180,6 +1198,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@standard-schema/utils@0.3.0:
+    resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
+    dev: false
 
   /@tailwindcss/forms@0.5.10(tailwindcss@3.4.17):
     resolution: {integrity: sha512-utI1ONF6uf/pPNO68kmN1b8rEwNXv3czukalo8VtJH8ksIkZXr3Q3VYudZLkCsDd4Wku120uF02hYK25XGPorw==}
@@ -4164,6 +4186,15 @@ packages:
     dependencies:
       react: 19.1.0
       scheduler: 0.26.0
+
+  /react-hook-form@7.56.4(react@19.1.0):
+    resolution: {integrity: sha512-Rob7Ftz2vyZ/ZGsQZPaRdIefkgOSrQSPXfqBdvOPwJfoGnjwRJUs7EM7Kc1mcoDv3NOtqBzPGbcMB8CGn9CKgw==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
+    dependencies:
+      react: 19.1.0
+    dev: false
 
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
