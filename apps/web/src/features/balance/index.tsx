@@ -1,8 +1,6 @@
-import { useBalance } from '@mini-wallet/store';
-import { useEffect } from 'react';
+import { useAccountBalance } from '@mini-wallet/hooks';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import { formatCurrency } from '@/utils';
 
 const BalanceCard: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="bg-white rounded-lg shadow p-6 h-full">
@@ -12,13 +10,7 @@ const BalanceCard: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 export const AccountBalance: React.FC = () => {
-  const { balance, isLoading, error, fetchBalance } = useBalance();
-
-  useEffect(() => {
-    fetchBalance();
-  }, [fetchBalance]);
-
-  const formattedBalance = formatCurrency(balance);
+  const { formattedBalance, isLoading, error } = useAccountBalance();
 
   if (isLoading) {
     return (

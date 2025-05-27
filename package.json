@@ -13,7 +13,9 @@
     "lint": "turbo run lint",
     "lint:fix": "eslint --fix \"**/*.{js,ts,tsx}\"",
     "format": "prettier --write \"**/*.{js,ts,tsx,md,json}\"",
-    "test": "pnpm -r --filter ./apps/web... test"
+    "test": "turbo run test",
+    "test:web": "pnpm -r --filter ./apps/web... test",
+    "test:utils": "pnpm -r --filter ./packages/utils... test"
   },
   "lint-staged": {
     "*.{js,ts,tsx}": [

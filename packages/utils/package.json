@@ -1,5 +1,5 @@
 {
-  "name": "@mini-wallet/hooks",
+  "name": "@mini-wallet/utils",
   "version": "0.0.0",
   "main": "./src/index.ts",
   "module": "./src/index.ts",
@@ -18,26 +18,13 @@
     "test:watch": "vitest"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "6.6.3",
-    "@testing-library/react": "16.3.0",
-    "@types/react": "^19.0.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
     "@vitejs/plugin-react": "^4.5.0",
     "eslint": "^8.47.0",
-    "jsdom": "26.1.0",
-    "react": "^19.0.0",
+    "jsdom": "^26.1.0",
     "tsup": "^8.0.0",
     "typescript": "^5.1.6",
-    "vitest": "3.1.4"
-  },
-  "peerDependencies": {
-    "react": "^19.0.0"
-  },
-  "dependencies": {
-    "@hookform/resolvers": "^3.3.0",
-    "@mini-wallet/store": "workspace:*",
-    "@mini-wallet/types": "workspace:*",
-    "@mini-wallet/utils": "workspace:*",
-    "react-hook-form": "^7.45.4",
-    "zod": "^3.22.0"
+    "vitest": "^3.1.4"
   }
 }
