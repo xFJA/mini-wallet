@@ -25,15 +25,25 @@ let mockAccountData: DashboardData = {
 };
 
 export const accountHandlers = [
-  http.get('/api/transactions', async () => {
+  http.get('/api/transactions', async ({ request }) => {
     // eslint-disable-next-line no-console
     console.log('[MSW] Handling /api/transactions request...');
 
     await delay(800);
 
+    // Get sort direction from query param (?sort=asc|desc)
+    const url = new URL(request.url);
+    const sort = url.searchParams.get('sort') || 'desc';
+
+    // Sort transactions by date
+    const sortedTransactions = [...(mockAccountData.transactions || [])].sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return sort === 'asc' ? dateA - dateB : dateB - dateA;
+    });
     return new HttpResponse(
       JSON.stringify({
-        transactions: mockAccountData.transactions,
+        transactions: sortedTransactions,
       }),
       {
         status: 200,

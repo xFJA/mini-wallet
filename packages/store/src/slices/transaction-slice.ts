@@ -1,4 +1,5 @@
-import type { Transaction } from '@mini-wallet/types';
+/* eslint-disable no-unused-vars */
+import type { SortDirection, Transaction } from '@mini-wallet/types';
 import type { StateCreator } from 'zustand';
 import type { TransactionState, WalletStore } from '../types';
 
@@ -7,8 +8,7 @@ export const createTransactionSlice: StateCreator<
   [],
   [],
   TransactionState & {
-    fetchTransactions: () => Promise<void>;
-    // eslint-disable-next-line no-unused-vars
+    fetchTransactions: (sortDirection?: SortDirection) => Promise<void>;
     addTransaction: (newTransaction: Transaction) => void;
     resetTransactionsError: () => void;
   }
@@ -17,14 +17,14 @@ export const createTransactionSlice: StateCreator<
   transactionsLoading: false,
   transactionsError: null,
 
-  fetchTransactions: async () => {
+  fetchTransactions: async (sortDirection = 'desc') => {
     set({
       transactionsLoading: true,
       transactionsError: null,
     });
 
     try {
-      const response = await fetch('/api/transactions');
+      const response = await fetch(`/api/transactions?sort=${sortDirection}`);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch transactions: ${response.status}`);
@@ -69,8 +69,15 @@ export const createTransactionSlice: StateCreator<
         // Only add fetched transactions that aren't already in pending list
         const uniqueFetched = fetchedTransactions.filter((t) => !pendingIds.has(t.id));
 
+        // Always sort all transactions (including pending) by date
+        const allTransactions = [...uniqueFetched, ...pendingTransactions];
+        allTransactions.sort((a, b) => {
+          const dateA = new Date(a.date).getTime();
+          const dateB = new Date(b.date).getTime();
+          return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+        });
         return {
-          transactions: [...uniqueFetched, ...pendingTransactions],
+          transactions: allTransactions,
           transactionsLoading: false,
         };
       });

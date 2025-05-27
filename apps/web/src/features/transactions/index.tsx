@@ -1,12 +1,10 @@
 import Table from '@/components/Table';
 import { formatCurrency, formatDate } from '@/utils';
 import { useTransactions } from '@mini-wallet/store';
-import { Transaction } from '@mini-wallet/types';
+import { SortDirection, Transaction } from '@mini-wallet/types';
 import { useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-
-type SortDirection = 'asc' | 'desc';
 
 interface TransactionListProps {}
 
@@ -18,28 +16,20 @@ export const Transactions: React.FC<TransactionListProps> = () => {
 
   useEffect(() => {
     const loadInitialData = async () => {
-      await fetchTransactions();
+      await fetchTransactions(sortDirection);
       setInitialLoaded(true);
     };
 
     if (!initialLoaded) {
       loadInitialData();
+    } else {
+      fetchTransactions(sortDirection);
     }
-  }, [fetchTransactions, initialLoaded]);
+  }, [fetchTransactions, initialLoaded, sortDirection]);
 
   useEffect(() => {
-    if (transactions.length > 0) {
-      // TODO: Move to mock API
-      const sorted = [...transactions].sort((a, b) => {
-        const dateA = new Date(a.date).getTime();
-        const dateB = new Date(b.date).getTime();
-        return sortDirection === 'desc' ? dateB - dateA : dateA - dateB;
-      });
-      setSortedTransactions(sorted);
-    } else {
-      setSortedTransactions([]);
-    }
-  }, [transactions, sortDirection]);
+    setSortedTransactions(transactions);
+  }, [transactions]);
 
   const toggleSortDirection = () => {
     setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');

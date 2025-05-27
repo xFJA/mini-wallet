@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import type { Transaction } from '@mini-wallet/types';
+import type { SortDirection, Transaction } from '@mini-wallet/types';
 
 export interface BalanceState {
   balance: number;
@@ -30,7 +30,7 @@ export type WithdrawalActions = {
 };
 
 export type TransactionActions = {
-  fetchTransactions(): Promise<void>;
+  fetchTransactions(sortDirection?: SortDirection): Promise<void>;
   addTransaction(transaction: Transaction): void;
   resetTransactionsError(): void;
 };
