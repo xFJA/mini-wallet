@@ -2,9 +2,9 @@ import Pagination from '@/components/Pagination';
 import StatusBadge from '@/components/StatusBadge';
 import Table from '@/components/Table';
 import { formatCurrency, formatDate } from '@/utils';
-import { useTransactions } from '@mini-wallet/store';
+import { useTransactionsList } from '@mini-wallet/hooks';
 import { SortDirection, Transaction } from '@mini-wallet/types';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { useSearchParams } from 'react-router-dom';
@@ -12,36 +12,27 @@ import { useSearchParams } from 'react-router-dom';
 interface TransactionListProps {}
 
 export const Transactions: React.FC<TransactionListProps> = () => {
-  const { transactions, isLoading, error, fetchTransactions, currentPage, totalPages } =
-    useTransactions();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [sortedTransactions, setSortedTransactions] = useState<Transaction[]>([]);
-  const [sortDirection, setSortDirection] = useState<SortDirection>(
-    (searchParams.get('sort') as SortDirection) || 'desc'
-  );
-  const [initialLoaded, setInitialLoaded] = useState<boolean>(false);
 
-  useEffect(() => {
-    const urlPage = searchParams.get('page');
-    const urlSort = searchParams.get('sort');
+  const urlPage = searchParams.get('page');
+  const urlSort = searchParams.get('sort');
+  const initialPage = urlPage ? parseInt(urlPage, 10) : 1;
+  const initialSortDirection = (urlSort as SortDirection) || 'desc';
 
-    const initialPage = urlPage ? parseInt(urlPage, 10) : 1;
-    const initialSort = (urlSort as SortDirection) || 'desc';
-
-    const loadInitialData = async () => {
-      await fetchTransactions({
-        sortDirection: initialSort,
-        page: initialPage,
-      });
-      setInitialLoaded(true);
-    };
-
-    if (!initialLoaded) {
-      loadInitialData();
-    } else {
-      fetchTransactions({ sortDirection, page: currentPage });
-    }
-  }, [fetchTransactions, initialLoaded, searchParams]);
+  const {
+    transactions,
+    isLoading,
+    error,
+    initialLoaded,
+    currentPage,
+    totalPages,
+    sortDirection,
+    toggleSortDirection,
+    handlePageChange,
+  } = useTransactionsList({
+    initialPage,
+    initialSortDirection,
+  });
 
   useEffect(() => {
     if (initialLoaded) {
@@ -51,23 +42,6 @@ export const Transactions: React.FC<TransactionListProps> = () => {
       });
     }
   }, [currentPage, sortDirection, initialLoaded, setSearchParams]);
-
-  useEffect(() => {
-    // Only show 5 transactions per page, even if there are pending transactions
-    // that would make the total more than 5
-    const pageSize = 5;
-    setSortedTransactions(transactions.slice(0, pageSize));
-  }, [transactions]);
-
-  const toggleSortDirection = () => {
-    const newDirection = sortDirection === 'desc' ? 'asc' : 'desc';
-    setSortDirection(newDirection);
-    fetchTransactions({ sortDirection: newDirection, page: 1 });
-  };
-
-  const handlePageChange = (page: number) => {
-    fetchTransactions({ sortDirection, page });
-  };
 
   if (isLoading && !initialLoaded) {
     return (
@@ -133,7 +107,7 @@ export const Transactions: React.FC<TransactionListProps> = () => {
             accessor: (transaction) => <StatusBadge status={transaction.status} />,
           },
         ]}
-        data={sortedTransactions}
+        data={transactions}
         keyExtractor={(transaction) => transaction.id}
         emptyMessage="No transactions found"
       />
