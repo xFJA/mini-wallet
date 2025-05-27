@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /**
- * Schema for account data including balance and currency
+ * Schema for account data including balance
  * @example
  * {
  *   balance: 1250.75
@@ -13,6 +13,9 @@ export const accountDataSchema = z.object({
 
 export type AccountData = z.infer<typeof accountDataSchema>;
 
+/**
+ * Validates account data against the schema
+ */
 export function validateAccountData(data: unknown): AccountData {
   return accountDataSchema.parse(data);
 }

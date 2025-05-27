@@ -1,10 +1,7 @@
+import { useBalance } from '@mini-wallet/store';
+import { useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-
-interface AccountBalanceProps {
-  balance: number;
-  isLoading?: boolean;
-}
 
 const BalanceCard: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="bg-white rounded-lg shadow p-6 h-full">
@@ -13,7 +10,13 @@ const BalanceCard: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </div>
 );
 
-export const AccountBalance: React.FC<AccountBalanceProps> = ({ balance, isLoading = false }) => {
+export const AccountBalance: React.FC = () => {
+  const { balance, isLoading, error, fetchBalance } = useBalance();
+
+  useEffect(() => {
+    fetchBalance();
+  }, [fetchBalance]);
+
   const formattedBalance = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -25,6 +28,14 @@ export const AccountBalance: React.FC<AccountBalanceProps> = ({ balance, isLoadi
     return (
       <BalanceCard>
         <Skeleton height={32} width={120} borderRadius={4} />
+      </BalanceCard>
+    );
+  }
+
+  if (error) {
+    return (
+      <BalanceCard>
+        <div className="text-red-500">Error loading balance</div>
       </BalanceCard>
     );
   }

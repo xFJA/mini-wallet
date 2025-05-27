@@ -1,6 +1,6 @@
 interface TransactionListProps {}
 
-export const TransactionList: React.FC<TransactionListProps> = () => {
+export const Transactions: React.FC<TransactionListProps> = () => {
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <h2 className="text-lg font-medium text-gray-900 mb-4">Transaction History</h2>
@@ -11,4 +11,4 @@ export const TransactionList: React.FC<TransactionListProps> = () => {
   );
 };
 
-export default TransactionList;
+export default Transactions;

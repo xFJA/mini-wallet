@@ -30,7 +30,16 @@
 
     /* Project References */
     "composite": true,
-    "incremental": true
+    "incremental": true,
+
+    /* Path Mappings for Direct Imports */
+    "baseUrl": ".",
+    "paths": {
+      "@mini-wallet/types": ["packages/types/src"],
+      "@mini-wallet/types/*": ["packages/types/src/*"],
+      "@mini-wallet/store": ["packages/store/src"],
+      "@mini-wallet/store/*": ["packages/store/src/*"]
+    }
   },
   "exclude": ["**/node_modules", "**/dist", "**/.turbo"],
   "display": "Base Configuration"
