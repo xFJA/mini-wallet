@@ -98,22 +98,24 @@ The application is built using a modular, package-based architecture to maximize
 3. **`Zustand`**: Lightweight state management with a simple API that works well across platforms
 4. **`Zod`**: Used for schema validation of API payloads and form data, ensuring that only valid data is processed and reducing runtime errors. `Zod` enables strong validation logic that is type-safe and easy to extend.
 
-## React Native Compatibility
+## Mobile App Implementation
 
-The application is designed with cross-platform compatibility in mind:
+1. **Platform-Specific UIs**: Instead of using React Native Web, we've chosen to implement completely separate UIs for web and mobile to maximize platform-specific capabilities and user experience.
 
-1. **Platform-Agnostic Logic**: Core business logic is separated from UI components and placed in shared hooks and utilities
-2. **Shared State Management**: `Zustand` works seamlessly with React Native
-3. **Type Consistency**: Shared `TypeScript` types ensure consistency between platforms
-4. **API Abstraction**: The API client is platform-independent and can be used in React Native
-5. **Future UI Components**: While not implemented yet, the architecture allows for platform-specific UI components with shared logic
+2. **Benefits of Separate UIs**:
 
-To create a React Native version, we would:
+   - **Optimized Performance**: Each platform's UI can be fine-tuned for its specific runtime characteristics
+   - **Native Feel**: Ability to use platform-specific components and interactions
+   - **Faster Development**: No need to work around cross-platform limitations
+   - **Better UX**: Tailored experiences that feel natural on each platform
+   - **Independent Release Cycles**: Web and mobile can be updated independently
 
-1. Add a new `apps/mobile` directory for the React Native app
-2. Reuse existing packages for API, state, hooks, and types
-3. Create platform-specific UI components in the mobile app
-4. Share business logic across platforms
+3. **Shared Logic**: While UIs are separate, the core business logic remains shared through our monorepo packages:
+   - API clients and services
+   - State management
+   - Custom hooks
+   - Type definitions
+   - Utility functions
 
 ## Testing
 

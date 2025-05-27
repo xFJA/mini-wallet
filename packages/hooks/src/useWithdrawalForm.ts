@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAccountData, useTransactions, useWithdrawal } from '@mini-wallet/store';
 import { WithdrawalFormValues, withdrawalFormSchema } from '@mini-wallet/types';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 interface UseWithdrawalFormOptions {
   onSuccess?: () => void;
@@ -47,11 +47,13 @@ export function useWithdrawalForm({ onSuccess }: UseWithdrawalFormOptions = {}) 
           await Promise.all([fetchAccountData(), fetchTransactions()]);
           if (onSuccess) onSuccess();
         } catch (refreshError) {
+          // eslint-disable-next-line no-console
           console.error('Error refreshing data:', refreshError);
         }
       }, 500);
     } catch (err) {
       setError('An error occurred while processing your withdrawal');
+      // eslint-disable-next-line no-console
       console.error('Withdrawal error:', err);
     }
   };
