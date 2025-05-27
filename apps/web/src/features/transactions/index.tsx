@@ -1,5 +1,6 @@
 import Table from '@/components/Table';
 import { formatCurrency, formatDate } from '@/utils';
+import StatusBadge from '@/components/StatusBadge';
 import { useTransactions } from '@mini-wallet/store';
 import { SortDirection, Transaction } from '@mini-wallet/types';
 import { useEffect, useState } from 'react';
@@ -33,19 +34,6 @@ export const Transactions: React.FC<TransactionListProps> = () => {
 
   const toggleSortDirection = () => {
     setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
-  };
-
-  const getStatusBadgeClass = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'bg-green-100 text-green-800';
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'failed':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
   };
 
   if (isLoading && !initialLoaded) {
@@ -109,15 +97,7 @@ export const Transactions: React.FC<TransactionListProps> = () => {
           },
           {
             header: 'Status',
-            accessor: (transaction) => (
-              <span
-                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(
-                  transaction.status
-                )}`}
-              >
-                {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
-              </span>
-            ),
+            accessor: (transaction) => <StatusBadge status={transaction.status} />,
           },
         ]}
         data={sortedTransactions}
