@@ -1,6 +1,7 @@
 import type { Transaction, WithdrawalRequest, WithdrawalResponse } from '@mini-wallet/types';
 import type { StateCreator } from 'zustand';
 import type { WalletStore, WithdrawalState } from '../types';
+import { getAuthHeaders } from '../utils/auth';
 
 export const createWithdrawalSlice: StateCreator<
   WalletStore,
@@ -33,9 +34,7 @@ export const createWithdrawalSlice: StateCreator<
 
       const response = await fetch('/api/withdraw', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify(withdrawalRequest),
       });
 

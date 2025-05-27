@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { LoginCredentials, User, validateLoginResponse, validateUser } from '@mini-wallet/types';
+import {
+  LoginCredentials,
+  LoginResponse,
+  User,
+  validateLoginResponse,
+  validateUser,
+} from '@mini-wallet/types';
 import type { StateCreator } from 'zustand';
 import type { AuthState, WalletStore } from '../types';
 
@@ -63,7 +69,7 @@ export const createAuthSlice: StateCreator<
     });
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,6 +82,10 @@ export const createAuthSlice: StateCreator<
           const data = await response.json();
 
           validateLoginResponse(data);
+
+          // TODO: Store in other places to avoid security issues
+          const loginResponse = data as LoginResponse;
+          safeLocalStorage.setItem('mini-wallet-token', loginResponse.token);
 
           const storedUser = safeLocalStorage.getItem('mini-wallet-user');
           let user: User;
@@ -121,6 +131,7 @@ export const createAuthSlice: StateCreator<
 
   logout: () => {
     safeLocalStorage.removeItem('mini-wallet-user');
+    safeLocalStorage.removeItem('mini-wallet-token');
 
     set({
       user: null,

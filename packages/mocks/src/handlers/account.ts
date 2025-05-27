@@ -5,6 +5,7 @@ import {
   WithdrawalResponse,
 } from '@mini-wallet/types';
 import { delay, http, HttpResponse } from 'msw';
+import { checkAuthorization } from '../utils';
 
 const generateMockTransactions = (count: number): Transaction[] => {
   const transactions: Transaction[] = [];
@@ -30,6 +31,11 @@ export const accountHandlers = [
     console.log('[MSW] Handling /api/transactions request...');
 
     await delay(800);
+
+    const authResponse = checkAuthorization(request);
+    if (authResponse) {
+      return authResponse;
+    }
 
     // Get query parameters
     const url = new URL(request.url);
@@ -66,13 +72,18 @@ export const accountHandlers = [
     );
   }),
 
-  http.get('/api/wallet', async () => {
+  http.get('/api/wallet', async ({ request }) => {
     // eslint-disable-next-line no-console
     console.log('[MSW] Handling /api/wallet request...');
 
     await delay(1000);
 
-    return new HttpResponse(JSON.stringify(mockAccountData), {
+    const authResponse = checkAuthorization(request);
+    if (authResponse) {
+      return authResponse;
+    }
+
+    return new HttpResponse(JSON.stringify({ balance: mockAccountData.balance }), {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -84,6 +95,11 @@ export const accountHandlers = [
     console.log('[MSW] Handling /api/withdraw request...');
 
     await delay(2000);
+
+    const authResponse = checkAuthorization(request);
+    if (authResponse) {
+      return authResponse;
+    }
 
     try {
       const withdrawalRequest = (await request.json()) as WithdrawalRequest;

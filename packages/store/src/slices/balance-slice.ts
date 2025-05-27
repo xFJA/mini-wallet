@@ -2,6 +2,7 @@
 import type { AccountData } from '@mini-wallet/types';
 import type { StateCreator } from 'zustand';
 import type { BalanceState, WalletStore } from '../types';
+import { getAuthHeaders } from '../utils/auth';
 
 export const createBalanceSlice: StateCreator<
   WalletStore,
@@ -20,7 +21,9 @@ export const createBalanceSlice: StateCreator<
     set({ isLoading: true, error: null });
 
     try {
-      const response = await fetch('/api/wallet');
+      const response = await fetch('/api/wallet', {
+        headers: getAuthHeaders(),
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch balance');
       }

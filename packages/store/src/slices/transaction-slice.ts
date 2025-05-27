@@ -2,6 +2,7 @@
 import type { PaginatedTransactions, SortDirection, Transaction } from '@mini-wallet/types';
 import type { StateCreator } from 'zustand';
 import type { TransactionState, WalletStore } from '../types';
+import { getAuthHeaders } from '../utils/auth';
 
 export const createTransactionSlice: StateCreator<
   WalletStore,
@@ -37,7 +38,9 @@ export const createTransactionSlice: StateCreator<
       queryParams.set('sort', sortDirection);
       queryParams.set('page', page.toString());
       queryParams.set('pageSize', pageSize.toString());
-      const response = await fetch(`/api/transactions?${queryParams.toString()}`);
+      const response = await fetch(`/api/transactions?${queryParams.toString()}`, {
+        headers: getAuthHeaders(),
+      });
 
       if (!response.ok) {
         throw new Error(`Failed to fetch transactions: ${response.status}`);

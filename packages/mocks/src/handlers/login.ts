@@ -8,8 +8,8 @@ const mockUsers = [
   },
 ];
 
-export const authHandlers = [
-  http.post('/api/auth/login', async ({ request }) => {
+export const loginHandlers = [
+  http.post('/api/login', async ({ request }) => {
     await delay(1000);
 
     const credentials = (await request.json()) as LoginCredentials;
