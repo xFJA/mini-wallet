@@ -5,6 +5,7 @@ export {
   useWithdrawal,
   useTransactions,
   useAccountData,
+  useAuth,
 } from './store';
 
 // Export types for consumers

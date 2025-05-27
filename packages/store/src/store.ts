@@ -1,6 +1,7 @@
 import type { Transaction } from '@mini-wallet/types';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { createAuthSlice } from './slices/auth-slice';
 import { createBalanceSlice } from './slices/balance-slice';
 import { createTransactionSlice } from './slices/transaction-slice';
 import { createWithdrawalSlice } from './slices/withdrawal-slice';
@@ -11,6 +12,7 @@ export const useWalletStore = create<WalletStore>()(
     ...createBalanceSlice(set, get, api),
     ...createWithdrawalSlice(set, get, api),
     ...createTransactionSlice(set, get, api),
+    ...createAuthSlice(set, get, api),
   }))
 );
 
@@ -42,6 +44,18 @@ export const useTransactions = () => {
   }));
 };
 
+export const useAuth = () => {
+  return useWalletStore((state) => ({
+    user: state.user,
+    isAuthenticated: state.isAuthenticated,
+    isLoading: state.isLoading,
+    error: state.error,
+    login: state.login,
+    logout: state.logout,
+    checkAuth: state.checkAuth,
+  }));
+};
+
 export const useAccountData = () => {
   const { balance, isLoading: balanceLoading, error: balanceError, fetchBalance } = useBalance();
 
@@ -52,17 +66,18 @@ export const useAccountData = () => {
     fetchTransactions,
   } = useTransactions();
 
-  const refreshAccountData = async () => {
+  const isLoading = balanceLoading || transactionsLoading;
+  const error = balanceError || transactionsError;
+
+  const fetchAccountData = async () => {
     await Promise.all([fetchBalance(), fetchTransactions()]);
   };
 
   return {
-    accountData: {
-      balance,
-      transactions,
-    },
-    isLoading: balanceLoading || transactionsLoading,
-    error: balanceError || transactionsError,
-    refreshAccountData,
+    balance,
+    transactions,
+    isLoading,
+    error,
+    fetchAccountData,
   };
 };

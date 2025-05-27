@@ -31,7 +31,7 @@ export const AccountBalance: React.FC = () => {
   if (error) {
     return (
       <BalanceCard>
-        <div className="text-red-500">Error loading balance</div>
+        <div className="text-red-500">Error loading balance: {error.message}</div>
       </BalanceCard>
     );
   }

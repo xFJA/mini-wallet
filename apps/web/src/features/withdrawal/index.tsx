@@ -13,7 +13,7 @@ export const Withdrawal: React.FC<WithdrawalFormProps> = ({ onSuccess }) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const { withdraw, isLoading, error: withdrawalError } = useWithdrawal();
-  const { refreshAccountData } = useAccountData();
+  const { fetchAccountData } = useAccountData();
   const { fetchTransactions } = useTransactions();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,7 +38,7 @@ export const Withdrawal: React.FC<WithdrawalFormProps> = ({ onSuccess }) => {
 
       setTimeout(async () => {
         try {
-          await Promise.all([refreshAccountData(), fetchTransactions()]);
+          await Promise.all([fetchAccountData(), fetchTransactions()]);
           if (onSuccess) onSuccess();
         } catch (refreshError) {
           console.error('Error refreshing data:', refreshError);

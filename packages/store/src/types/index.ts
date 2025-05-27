@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import type { SortDirection, Transaction } from '@mini-wallet/types';
+import type { User } from '../slices/auth-slice';
 
 export interface BalanceState {
   balance: number;
@@ -16,6 +17,13 @@ export interface TransactionState {
   transactions: Transaction[];
   transactionsLoading: boolean;
   transactionsError: Error | null;
+}
+
+export interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: Error | null;
 }
 
 export type BalanceActions = {
@@ -35,10 +43,18 @@ export type TransactionActions = {
   resetTransactionsError(): void;
 };
 
+export type AuthActions = {
+  login(credentials: { username: string; password: string }): Promise<boolean>;
+  logout(): void;
+  checkAuth(): boolean;
+};
+
 export type WalletStore = BalanceState &
   WithdrawalState &
   TransactionState &
+  AuthState &
   BalanceActions &
   WithdrawalActions &
-  TransactionActions;
+  TransactionActions &
+  AuthActions;
 /* eslint-enable no-unused-vars */
