@@ -15,6 +15,7 @@
     "format": "prettier --write \"**/*.{js,ts,tsx,md,json}\"",
     "test": "turbo run test",
     "test:web": "pnpm -r --filter ./apps/web... test",
+    "test:hooks": "pnpm -r --filter ./packages/hooks... test",
     "test:utils": "pnpm -r --filter ./packages/utils... test"
   },
   "lint-staged": {
