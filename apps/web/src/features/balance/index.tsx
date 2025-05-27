@@ -2,6 +2,7 @@ import { useBalance } from '@mini-wallet/store';
 import { useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { formatCurrency } from '@/utils';
 
 const BalanceCard: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="bg-white rounded-lg shadow p-6 h-full">
@@ -17,12 +18,7 @@ export const AccountBalance: React.FC = () => {
     fetchBalance();
   }, [fetchBalance]);
 
-  const formattedBalance = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(balance);
+  const formattedBalance = formatCurrency(balance);
 
   if (isLoading) {
     return (

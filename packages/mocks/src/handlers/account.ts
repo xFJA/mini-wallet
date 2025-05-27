@@ -12,24 +12,41 @@ let mockAccountData: DashboardData = {
     {
       id: '1',
       amount: 1000,
-      date: new Date().toISOString(),
+      date: new Date(Date.now() - 86400000).toISOString(),
       status: 'completed',
     },
     {
       id: '2',
       amount: 250.25,
-      date: new Date(Date.now() - 86400000).toISOString(),
+      date: new Date().toISOString(),
       status: 'completed',
     },
   ],
 };
 
 export const accountHandlers = [
+  http.get('/api/transactions', async () => {
+    // eslint-disable-next-line no-console
+    console.log('[MSW] Handling /api/transactions request...');
+
+    await delay(800);
+
+    return new HttpResponse(
+      JSON.stringify({
+        transactions: mockAccountData.transactions,
+      }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }),
+
   http.get('/api/wallet', async () => {
     // eslint-disable-next-line no-console
     console.log('[MSW] Handling /api/wallet request...');
 
-    await delay(300);
+    await delay(1000);
 
     return new HttpResponse(JSON.stringify(mockAccountData), {
       headers: {
@@ -42,7 +59,7 @@ export const accountHandlers = [
     // eslint-disable-next-line no-console
     console.log('[MSW] Handling /api/withdraw request...');
 
-    await delay(500);
+    await delay(2000);
 
     try {
       const withdrawalRequest = (await request.json()) as WithdrawalRequest;
@@ -81,7 +98,7 @@ export const accountHandlers = [
 
       // Create a new transaction
       const transaction: Transaction = {
-        id: Math.random().toString(36).substring(2, 10),
+        id: ((mockAccountData.transactions?.length || 0) + 1).toString(),
         amount,
         date: new Date().toISOString(),
         status: 'completed',

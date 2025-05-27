@@ -1,4 +1,4 @@
-import type { WithdrawalRequest, WithdrawalResponse } from '@mini-wallet/types';
+import type { Transaction, WithdrawalRequest, WithdrawalResponse } from '@mini-wallet/types';
 import type { StateCreator } from 'zustand';
 import type { WalletStore, WithdrawalState } from '../types';
 
@@ -11,7 +11,7 @@ export const createWithdrawalSlice: StateCreator<
     withdraw: (withdrawAmount: number) => Promise<WithdrawalResponse>;
     resetWithdrawalError: () => void;
   }
-> = (set) => ({
+> = (set, get) => ({
   withdrawalIsLoading: false,
   withdrawalError: null,
 
@@ -20,6 +20,16 @@ export const createWithdrawalSlice: StateCreator<
 
     try {
       const withdrawalRequest: WithdrawalRequest = { amount: withdrawAmount };
+
+      const pendingTransaction: Transaction = {
+        id: '-',
+        amount: withdrawAmount,
+        date: new Date().toISOString(),
+        status: 'pending' as const,
+      };
+
+      // Add the pending transaction to the store
+      get().addTransaction(pendingTransaction);
 
       const response = await fetch('/api/withdraw', {
         method: 'POST',

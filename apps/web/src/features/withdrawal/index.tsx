@@ -1,5 +1,5 @@
 import Button from '@/components/Button';
-import { useAccountData, useWithdrawal } from '@mini-wallet/store';
+import { useAccountData, useTransactions, useWithdrawal } from '@mini-wallet/store';
 
 import { useState } from 'react';
 
@@ -14,6 +14,7 @@ export const Withdrawal: React.FC<WithdrawalFormProps> = ({ onSuccess }) => {
 
   const { withdraw, isLoading, error: withdrawalError } = useWithdrawal();
   const { refreshAccountData } = useAccountData();
+  const { fetchTransactions } = useTransactions();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,10 +38,10 @@ export const Withdrawal: React.FC<WithdrawalFormProps> = ({ onSuccess }) => {
 
       setTimeout(async () => {
         try {
-          await refreshAccountData();
+          await Promise.all([refreshAccountData(), fetchTransactions()]);
           if (onSuccess) onSuccess();
         } catch (refreshError) {
-          console.error('Error refreshing account data:', refreshError);
+          console.error('Error refreshing data:', refreshError);
         }
       }, 500);
     } catch (err) {
