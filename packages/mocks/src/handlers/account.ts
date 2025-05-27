@@ -41,7 +41,7 @@ export const accountHandlers = [
     const url = new URL(request.url);
     const sort = url.searchParams.get('sort') || 'desc';
     const page = parseInt(url.searchParams.get('page') || '1', 10);
-    const pageSize = parseInt(url.searchParams.get('pageSize') || '10', 10);
+    const pageSize = parseInt(url.searchParams.get('pageSize') || '5', 10);
 
     // Sort transactions by date
     const sortedTransactions = [...(mockAccountData.transactions || [])].sort((a, b) => {

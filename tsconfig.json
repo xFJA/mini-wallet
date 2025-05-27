@@ -37,6 +37,10 @@
     "paths": {
       "@mini-wallet/types": ["packages/types/src"],
       "@mini-wallet/types/*": ["packages/types/src/*"],
+      "@mini-wallet/api": ["packages/api/src"],
+      "@mini-wallet/api/*": ["packages/api/src/*"],
+      "@mini-wallet/hooks": ["packages/hooks/src"],
+      "@mini-wallet/hooks/*": ["packages/hooks/src/*"],
       "@mini-wallet/store": ["packages/store/src"],
       "@mini-wallet/store/*": ["packages/store/src/*"]
     }

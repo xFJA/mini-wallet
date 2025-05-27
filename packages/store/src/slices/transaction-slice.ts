@@ -84,12 +84,26 @@ export const createTransactionSlice: StateCreator<
         // Only add fetched transactions that aren't already in pending list
         const uniqueFetched = fetchedTransactions.filter((t: Transaction) => !pendingIds.has(t.id));
 
-        // Always sort all transactions (including pending) by date
+        // Combine all transactions and sort them strictly by date
+        // This ensures pending transactions are properly interleaved with other transactions
         const allTransactions = [...uniqueFetched, ...pendingTransactions];
+
+        // Sort by date first, then by status if dates are equal (completed transactions first)
         allTransactions.sort((a, b) => {
           const dateA = new Date(a.date).getTime();
           const dateB = new Date(b.date).getTime();
-          return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+
+          // If dates are different, sort by date according to sort direction
+          if (dateA !== dateB) {
+            return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+          }
+
+          // If dates are the same, prioritize completed transactions
+          if (a.status === 'completed' && b.status !== 'completed') return -1;
+          if (a.status !== 'completed' && b.status === 'completed') return 1;
+
+          // If both have same status, maintain their order
+          return 0;
         });
         return {
           transactions: allTransactions,

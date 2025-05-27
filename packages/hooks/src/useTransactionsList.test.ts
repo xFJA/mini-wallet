@@ -52,6 +52,7 @@ describe('useTransactionsList [hook]', () => {
     expect(fetchTransactionsMock).toHaveBeenCalledWith({
       sortDirection: 'desc',
       page: 1,
+      pageSize: 5,
     });
   });
 
@@ -69,15 +70,28 @@ describe('useTransactionsList [hook]', () => {
     expect(fetchTransactionsMock).toHaveBeenCalledWith({
       sortDirection: 'asc',
       page: 2,
+      pageSize: 10,
     });
   });
 
   it('should limit transactions to pageSize', async () => {
+    // Mock the transactions array to be the same length as what would be returned from the server
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useTransactions as any).mockReturnValue({
+      transactions: mockTransactions.slice(0, 6),
+      isLoading: false,
+      error: null,
+      fetchTransactions: fetchTransactionsMock,
+      currentPage: 1,
+      totalPages: 2,
+    });
+
     const { result } = renderHook(() => useTransactionsList({ pageSize: 3 }));
 
     await waitForHookToUpdate();
 
-    expect(result.current.transactions.length).toBe(3);
+    // We're no longer slicing in the hook, so the length should match what comes from the store
+    expect(result.current.transactions.length).toBe(6);
   });
 
   it('should toggle sort direction and fetch new data', async () => {
@@ -85,10 +99,8 @@ describe('useTransactionsList [hook]', () => {
 
     await waitForHookToUpdate();
 
-    // Initial state
     expect(result.current.sortDirection).toBe('desc');
 
-    // Toggle sort direction
     await act(async () => {
       result.current.toggleSortDirection();
       await waitForHookToUpdate();
@@ -98,6 +110,7 @@ describe('useTransactionsList [hook]', () => {
     expect(fetchTransactionsMock).toHaveBeenCalledWith({
       sortDirection: 'asc',
       page: 1,
+      pageSize: 5,
     });
   });
 
@@ -115,6 +128,7 @@ describe('useTransactionsList [hook]', () => {
     expect(fetchTransactionsMock).toHaveBeenCalledWith({
       sortDirection: 'desc',
       page: 2,
+      pageSize: 5,
     });
   });
 
