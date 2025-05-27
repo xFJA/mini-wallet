@@ -1,4 +1,5 @@
 import Button from '@/components/Button';
+import TextField from '@/components/TextField';
 import { useAccountData, useTransactions, useWithdrawal } from '@mini-wallet/store';
 
 import { useState } from 'react';
@@ -55,27 +56,19 @@ export const Withdrawal: React.FC<WithdrawalFormProps> = ({ onSuccess }) => {
       <h2 className="text-xl font-semibold mb-4">Withdraw Funds</h2>
 
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
-            Amount (USD)
-          </label>
-          <div className="relative">
-            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
-              $
-            </span>
-            <input
-              id="amount"
-              type="number"
-              step="0.01"
-              min="0.01"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="block w-full pl-7 pr-12 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              placeholder="0.00"
-              disabled={isLoading}
-            />
-          </div>
-        </div>
+        <TextField
+          id="amount"
+          label="Amount (USD)"
+          type="number"
+          step="0.01"
+          min="0.01"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          placeholder="0.00"
+          disabled={isLoading}
+          startAdornment={'$'}
+          containerClassName="mb-4"
+        />
 
         {error && (
           <div className="mb-4 p-2 bg-red-50 border border-red-200 rounded text-red-600 text-sm">

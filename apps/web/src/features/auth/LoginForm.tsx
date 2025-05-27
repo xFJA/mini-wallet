@@ -1,4 +1,5 @@
 import Button from '@/components/Button';
+import TextField from '@/components/TextField';
 import { useAuth } from '@mini-wallet/store';
 import { useState } from 'react';
 
@@ -35,38 +36,30 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
       )}
 
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 text-sm font-medium mb-2">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter your email"
-            required
-          />
-        </div>
+        <TextField
+          id="email"
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email"
+          required
+        />
 
-        <div className="mb-6">
-          <label htmlFor="password" className="block text-gray-700 text-sm font-medium mb-2">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter your password"
-            required
-          />
-          <p className="mt-1 text-xs text-gray-500">
-            Demo credentials: email: user@example.com, password: password
-          </p>
-        </div>
+        <TextField
+          id="password"
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Enter your password"
+          required
+          containerClassName="mb-6"
+        />
+
+        <p className="mt-1 text-xs text-gray-500">
+          Demo credentials: email: user@example.com, password: password
+        </p>
 
         <Button
           type="submit"
