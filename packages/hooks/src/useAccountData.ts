@@ -9,11 +9,9 @@ interface UseAccountDataResult {
 
 export function useAccountData(): UseAccountDataResult {
   const [accountData, setAccountData] = useState<AccountData>({
-    balance: 1250.75,
-    currency: 'USD',
+    balance: 0,
   });
-
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
@@ -21,12 +19,14 @@ export function useAccountData(): UseAccountDataResult {
       try {
         setIsLoading(true);
 
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        const response = await fetch('/api/wallet');
 
-        setAccountData({
-          balance: 1250.75,
-          currency: 'USD',
-        });
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
+        const data: AccountData = await response.json();
+        setAccountData(data);
         setIsLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Unknown error occurred'));

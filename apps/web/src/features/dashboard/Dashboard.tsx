@@ -28,11 +28,7 @@ export const Dashboard: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div className="md:col-span-2">
-              <AccountBalance
-                balance={accountData.balance}
-                currency={accountData.currency}
-                isLoading={isLoading}
-              />
+              <AccountBalance balance={accountData.balance} isLoading={isLoading} />
             </div>
             <WithdrawSection />
           </div>

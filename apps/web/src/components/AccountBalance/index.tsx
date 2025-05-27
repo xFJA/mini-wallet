@@ -3,7 +3,6 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 interface AccountBalanceProps {
   balance: number;
-  currency?: string;
   isLoading?: boolean;
 }
 
@@ -14,14 +13,10 @@ const BalanceCard: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </div>
 );
 
-export const AccountBalance: React.FC<AccountBalanceProps> = ({
-  balance,
-  currency = 'USD',
-  isLoading = false,
-}) => {
+export const AccountBalance: React.FC<AccountBalanceProps> = ({ balance, isLoading = false }) => {
   const formattedBalance = new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency,
+    currency: 'USD',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(balance);
