@@ -1,4 +1,6 @@
+import Button from '@/components/Button';
 import { useAccountData, useWithdrawal } from '@mini-wallet/store';
+
 import { useState } from 'react';
 
 interface WithdrawalFormProps {
@@ -92,17 +94,9 @@ export const Withdrawal: React.FC<WithdrawalFormProps> = ({ onSuccess }) => {
           </div>
         )}
 
-        <button
-          type="submit"
-          disabled={isLoading || !amount}
-          className={`w-full py-2 px-4 rounded-md text-white font-medium ${
-            isLoading || !amount
-              ? 'bg-blue-300 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700'
-          }`}
-        >
-          {isLoading ? 'Processing...' : 'Withdraw'}
-        </button>
+        <Button type="submit" loading={isLoading} disabled={isLoading || !amount}>
+          Withdraw
+        </Button>
       </form>
     </div>
   );
