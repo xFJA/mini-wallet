@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger';
+export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger' | 'accent';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -22,31 +22,35 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    'font-medium rounded-md transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2';
+    'font-medium rounded-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-1 relative overflow-hidden';
 
   const sizeStyles = {
-    sm: 'py-1 px-3 text-sm',
-    md: 'py-2 px-4',
-    lg: 'py-3 px-6 text-lg',
+    sm: 'py-1.5 px-3 text-sm',
+    md: 'py-2.5 px-5',
+    lg: 'py-3.5 px-7 text-lg',
   };
 
   const variantStyles = {
     primary:
       disabled || loading
-        ? 'bg-blue-300 text-white cursor-not-allowed'
-        : 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500',
+        ? 'bg-primary/50 text-white cursor-not-allowed'
+        : 'bg-gradient-to-r from-primary to-primary-foreground/90 text-white hover:shadow-md hover:shadow-primary/25 hover:-translate-y-0.5 active:translate-y-0 focus:ring-primary',
     secondary:
       disabled || loading
-        ? 'bg-gray-300 text-white cursor-not-allowed'
-        : 'bg-gray-600 hover:bg-gray-700 text-white focus:ring-gray-500',
+        ? 'bg-secondary/50 text-white cursor-not-allowed'
+        : 'bg-gradient-to-r from-secondary to-secondary/80 text-white hover:shadow-md hover:shadow-secondary/25 hover:-translate-y-0.5 active:translate-y-0 focus:ring-secondary',
     outline:
       disabled || loading
-        ? 'border border-gray-300 text-gray-400 cursor-not-allowed'
-        : 'border border-blue-600 text-blue-600 hover:bg-blue-50 focus:ring-blue-500',
+        ? 'border border-muted text-muted-foreground cursor-not-allowed'
+        : 'border border-primary text-primary-foreground hover:bg-primary/10 hover:shadow-md hover:shadow-primary/10 hover:-translate-y-0.5 active:translate-y-0 focus:ring-primary',
     danger:
       disabled || loading
-        ? 'bg-red-300 text-white cursor-not-allowed'
-        : 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',
+        ? 'bg-destructive/50 text-white cursor-not-allowed'
+        : 'bg-gradient-to-r from-destructive to-destructive/80 text-white hover:shadow-md hover:shadow-destructive/25 hover:-translate-y-0.5 active:translate-y-0 focus:ring-destructive',
+    accent:
+      disabled || loading
+        ? 'bg-accent/50 text-white cursor-not-allowed'
+        : 'bg-gradient-to-r from-accent to-accent/80 text-white hover:shadow-md hover:shadow-accent/25 hover:-translate-y-0.5 active:translate-y-0 focus:ring-accent',
   };
 
   const widthStyle = fullWidth ? 'w-full' : '';
@@ -58,7 +62,34 @@ const Button: React.FC<ButtonProps> = ({
       className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${widthStyle} ${className}`}
       {...props}
     >
-      {loading ? 'Processing...' : children}
+      <span className="relative z-10 flex items-center justify-center">
+        {loading && (
+          <svg
+            className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+        )}
+        {loading ? 'Processing...' : children}
+      </span>
+      {!disabled && !loading && variant !== 'outline' && (
+        <span className="absolute inset-0 h-full w-full bg-white/10 scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
+      )}
     </button>
   );
 };
