@@ -19,42 +19,36 @@ export function useTransactionsList({
   const [sortedTransactions, setSortedTransactions] = useState<Transaction[]>([]);
   const [sortDirection, setSortDirection] = useState<SortDirection>(initialSortDirection);
   const [initialLoaded, setInitialLoaded] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(initialPage);
 
   useEffect(() => {
-    // Define loadInitialData inside useEffect to avoid dependency issues
-    const loadInitialData = () => {
+    if (!initialLoaded) {
       fetchTransactions({ sortDirection: initialSortDirection, page: initialPage, pageSize });
       setInitialLoaded(true);
-    };
-
-    if (!initialLoaded) {
-      loadInitialData();
-    } else {
-      fetchTransactions({ sortDirection, page: currentPage, pageSize });
     }
-  }, [
-    fetchTransactions,
-    initialLoaded,
-    initialPage,
-    initialSortDirection,
-    sortDirection,
-    currentPage,
-    pageSize,
-  ]);
+  }, [fetchTransactions, initialLoaded, initialPage, initialSortDirection, pageSize]);
 
   useEffect(() => {
-    // Don't slice the transactions as they're already paginated from the server
     setSortedTransactions(transactions);
   }, [transactions]);
+
+  useEffect(() => {
+    if (initialLoaded && currentPage !== page) {
+      setPage(currentPage);
+    }
+  }, [currentPage, initialLoaded, page]);
 
   const toggleSortDirection = () => {
     const newDirection = sortDirection === 'desc' ? 'asc' : 'desc';
     setSortDirection(newDirection);
-    fetchTransactions({ sortDirection: newDirection, page: currentPage, pageSize });
+    setPage(1);
+    fetchTransactions({ sortDirection: newDirection, page: 1, pageSize });
   };
 
-  const handlePageChange = (page: number) => {
-    fetchTransactions({ sortDirection, page, pageSize });
+  const handlePageChange = (newPage: number) => {
+    if (newPage === page) return;
+    setPage(newPage);
+    fetchTransactions({ sortDirection, page: newPage, pageSize });
   };
 
   return {

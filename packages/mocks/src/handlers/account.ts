@@ -11,7 +11,7 @@ const generateMockTransactions = (count: number): Transaction[] => {
   const transactions: Transaction[] = [];
   for (let i = 1; i <= count; i++) {
     transactions.push({
-      id: i.toString(),
+      id: (count - i + 1).toString(), // Invert ID order so oldest transaction has ID 1
       amount: Math.round(Math.random() * 10000) / 100,
       date: new Date(Date.now() - i * 3600000).toISOString(), // Each transaction 1 hour apart
       status: Math.random() > 0.8 ? (Math.random() > 0.5 ? 'pending' : 'failed') : 'completed',
@@ -47,7 +47,19 @@ export const accountHandlers = [
     const sortedTransactions = [...(mockAccountData.transactions || [])].sort((a, b) => {
       const dateA = new Date(a.date).getTime();
       const dateB = new Date(b.date).getTime();
-      return sort === 'asc' ? dateA - dateB : dateB - dateA;
+
+      // If dates are different, sort by date according to sort direction
+      if (dateA !== dateB) {
+        return sort === 'asc' ? dateA - dateB : dateB - dateA;
+      }
+
+      // If dates are the same, prioritize completed transactions
+      if (a.status === 'completed' && b.status !== 'completed') return -1;
+      if (a.status !== 'completed' && b.status === 'completed') return 1;
+
+      // If both have same status and date, use ID for consistent ordering
+      // For consistent ordering, lower IDs (newer transactions) should come first
+      return parseInt(a.id) - parseInt(b.id);
     });
 
     // Calculate pagination
@@ -136,13 +148,21 @@ export const accountHandlers = [
       // Process the withdrawal
       const newBalance = mockAccountData.balance - amount;
 
-      // Create a new transaction
+      // Create a new transaction with ID 1 (newest)
       const transaction: Transaction = {
-        id: ((mockAccountData.transactions?.length || 0) + 1).toString(),
+        id: '1',
         amount,
         date: new Date().toISOString(),
         status: 'completed',
       };
+
+      // Increment all other transaction IDs to maintain ordering
+      if (mockAccountData.transactions) {
+        mockAccountData.transactions = mockAccountData.transactions.map((t) => ({
+          ...t,
+          id: (parseInt(t.id) + 1).toString(), // Increment existing IDs
+        }));
+      }
 
       // Update the mock data
       mockAccountData = {

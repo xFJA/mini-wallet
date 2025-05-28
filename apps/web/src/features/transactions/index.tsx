@@ -14,8 +14,9 @@ export const Transactions: React.FC<TransactionListProps> = () => {
 
   const urlPage = searchParams.get('page');
   const urlSort = searchParams.get('sort');
-  const initialPage = urlPage ? parseInt(urlPage, 10) : 1;
-  const initialSortDirection = (urlSort as SortDirection) || 'desc';
+  const initialPage = urlPage && !isNaN(parseInt(urlPage, 10)) ? parseInt(urlPage, 10) : 1;
+  const initialSortDirection =
+    urlSort === 'asc' || urlSort === 'desc' ? (urlSort as SortDirection) : 'desc';
 
   const {
     transactions,
@@ -34,10 +35,10 @@ export const Transactions: React.FC<TransactionListProps> = () => {
 
   useEffect(() => {
     if (initialLoaded) {
-      setSearchParams({
-        page: currentPage.toString(),
-        sort: sortDirection,
-      });
+      const newParams = new URLSearchParams();
+      newParams.set('page', currentPage.toString());
+      newParams.set('sort', sortDirection);
+      setSearchParams(newParams, { replace: true }); // Use replace to avoid cluttering browser history
     }
   }, [currentPage, sortDirection, initialLoaded, setSearchParams]);
 

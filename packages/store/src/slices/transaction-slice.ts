@@ -78,15 +78,19 @@ export const createTransactionSlice: StateCreator<
           return true;
         });
 
+        // Only include pending transactions on the first page to avoid them appearing on every page
+        const shouldIncludePending = page === 1;
+
         // Get IDs of all transactions we're keeping to avoid duplicates
         const pendingIds = new Set(pendingTransactions.map((t) => t.id));
 
         // Only add fetched transactions that aren't already in pending list
         const uniqueFetched = fetchedTransactions.filter((t: Transaction) => !pendingIds.has(t.id));
 
-        // Combine all transactions and sort them strictly by date
-        // This ensures pending transactions are properly interleaved with other transactions
-        const allTransactions = [...uniqueFetched, ...pendingTransactions];
+        // Combine transactions, but only include pending transactions on the first page
+        const allTransactions = shouldIncludePending
+          ? [...uniqueFetched, ...pendingTransactions]
+          : [...uniqueFetched];
 
         // Sort by date first, then by status if dates are equal (completed transactions first)
         allTransactions.sort((a, b) => {
@@ -95,6 +99,8 @@ export const createTransactionSlice: StateCreator<
 
           // If dates are different, sort by date according to sort direction
           if (dateA !== dateB) {
+            // For 'asc', newer dates (higher values) should have higher indices
+            // For 'desc', older dates (lower values) should have higher indices
             return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
           }
 
@@ -102,8 +108,8 @@ export const createTransactionSlice: StateCreator<
           if (a.status === 'completed' && b.status !== 'completed') return -1;
           if (a.status !== 'completed' && b.status === 'completed') return 1;
 
-          // If both have same status, maintain their order
-          return 0;
+          // If both have same status and date, use transaction ID for consistent ordering
+          return a.id.localeCompare(b.id);
         });
         return {
           transactions: allTransactions,

@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 export interface Column<T> {
   header: string;
-  accessor: ((item: T) => ReactNode) | string;
+  accessor: ((item: T, index: number, data: T[]) => ReactNode) | string;
   className?: string;
 }
 
@@ -72,15 +72,15 @@ function Table<T>({
                 key={keyExtractor(item)}
                 className={`transition-colors duration-200 hover:bg-muted/40 ${rowClass}`}
               >
-                {columns.map((column, index) => {
+                {columns.map((column, columnIndex) => {
                   const cellContent =
                     typeof column.accessor === 'function'
-                      ? column.accessor(item)
+                      ? column.accessor(item, data.indexOf(item), data)
                       : String(item[column.accessor as keyof T]);
 
                   return (
                     <td
-                      key={index}
+                      key={columnIndex}
                       className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${column.className || 'text-white/90'}`}
                     >
                       {cellContent}
