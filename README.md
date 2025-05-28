@@ -73,6 +73,10 @@ pnpm test
 pnpm build
 ```
 
+## 🔒 Security Note
+
+⚠️ **Important**: This application uses `localStorage` for JWT tokens for demonstration purposes only. In a production environment, consider more secure alternatives like HttpOnly cookies with proper security flags to prevent XSS and CSRF attacks.
+
 ## 🎨 Design Choices
 
 ### Architecture
