@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAccountData, useTransactions, useWithdrawal } from '@mini-wallet/store';
 import { WithdrawalFormValues, withdrawalFormSchema } from '@mini-wallet/types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 interface UseWithdrawalFormOptions {
@@ -11,6 +11,20 @@ interface UseWithdrawalFormOptions {
 export function useWithdrawalForm({ onSuccess }: UseWithdrawalFormOptions = {}) {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(null), 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(null), 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
 
   const { withdraw, isLoading, error: withdrawalError } = useWithdrawal();
   const { fetchAccountData } = useAccountData();
@@ -52,7 +66,12 @@ export function useWithdrawalForm({ onSuccess }: UseWithdrawalFormOptions = {}) 
         }
       }, 500);
     } catch (err) {
-      setError('An error occurred while processing your withdrawal');
+      const message =
+        err instanceof Error && err.message
+          ? err.message
+          : 'An error occurred while processing your withdrawal';
+      setError(message);
+      setSuccessMessage(null);
       // eslint-disable-next-line no-console
       console.error('Withdrawal error:', err);
     }

@@ -19,6 +19,12 @@ export const createWithdrawalSlice: StateCreator<
   withdraw: async (withdrawAmount: number): Promise<WithdrawalResponse> => {
     set({ withdrawalIsLoading: true, withdrawalError: null });
 
+    const balance = get().balance;
+    if (withdrawAmount > balance) {
+      set({ withdrawalError: 'Not enough funds', withdrawalIsLoading: false });
+      throw new Error('Not enough funds');
+    }
+
     try {
       const withdrawalRequest: WithdrawalRequest = { amount: withdrawAmount };
 
